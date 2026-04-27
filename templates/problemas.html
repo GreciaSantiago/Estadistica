@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probabilidad y Estadística</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#F7F5F2;color:#333333;font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+    .header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:#fff;border-bottom:1px solid #EDE8E3;box-shadow:0 2px 12px rgba(200,169,126,0.08);}
+    .logo{font-size:11px;letter-spacing:4px;color:#C8A97E;text-transform:uppercase;font-weight:600;}
+    .title-block{text-align:center;}
+    .title-block h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#333;letter-spacing:-0.5px;}
+    .title-block h1 span{color:#C8A97E;}
+    .subtitle{font-size:10px;letter-spacing:5px;color:#bbb;text-transform:uppercase;margin-top:4px;}
+    .nav-right{font-size:11px;letter-spacing:2px;color:#bbb;}
+
+    .tabs{display:flex;background:#fff;border-bottom:1px solid #EDE8E3;overflow-x:auto;padding:0 48px;}
+    .tab{padding:16px 24px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:#bbb;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+    .tab:hover{color:#C8A97E;}
+    .tab.active{color:#C8A97E;border-bottom:2px solid #C8A97E;}
+
+    .main{padding:48px;max-width:860px;margin:0 auto;}
+
+    .section{display:none;}
+    .section.active{display:block;}
+    .section-label{font-size:10px;letter-spacing:4px;color:#C8A97E;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+    .section-title{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;line-height:1;margin-bottom:10px;color:#333;}
+    .section-desc{font-size:14px;color:#888;margin-bottom:36px;line-height:1.7;}
+
+    .field-label{font-size:10px;letter-spacing:3px;color:#aaa;text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+    .input{width:100%;background:#fff;border:1.5px solid #EDE8E3;color:#333;padding:14px 18px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(200,169,126,0.06);}
+    .input:focus{border-color:#C8A97E;box-shadow:0 2px 16px rgba(200,169,126,0.15);}
+    .input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23C8A97E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer;}
+
+    .btn{background:#C8A97E;color:#fff;border:none;padding:14px 36px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:50px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(200,169,126,0.3);}
+    .btn:hover{background:#b8956a;box-shadow:0 6px 20px rgba(200,169,126,0.4);transform:translateY(-1px);}
+    .btn:active{transform:translateY(0);}
+
+    .results{margin-top:36px;display:none;}
+    .results.show{display:block;}
+    .results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+    .result-card{background:#fff;padding:24px 20px;text-align:center;border-radius:16px;box-shadow:0 4px 20px rgba(200,169,126,0.1);border:1.5px solid #EDE8E3;}
+    .result-label{font-size:9px;letter-spacing:3px;color:#bbb;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+    .result-val{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#C8A97E;}
+    .graph-img{width:100%;border-radius:16px;border:1.5px solid #EDE8E3;margin-bottom:24px;box-shadow:0 4px 20px rgba(200,169,126,0.1);}
+
+    .integral-result{background:#fff;border:1.5px solid #EDE8E3;padding:24px;margin-top:24px;display:none;border-radius:16px;box-shadow:0 4px 20px rgba(200,169,126,0.1);}
+    .integral-result.show{display:block;}
+    .integral-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#C8A97E;margin:10px 0;}
+
+    .divider{height:1px;background:linear-gradient(to right,transparent,#EDE8E3,transparent);margin:32px 0;}
+
+    .calc-toggle{position:fixed;bottom:30px;right:30px;width:54px;height:54px;background:#C8A97E;border:none;color:#fff;font-size:22px;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 4px 20px rgba(200,169,126,0.4);transition:all .2s;}
+    .calc-toggle:hover{background:#b8956a;transform:scale(1.05);}
+    .calc-panel{position:fixed;bottom:100px;right:30px;width:284px;background:#fff;border:1.5px solid #EDE8E3;z-index:100;display:none;padding:20px;border-radius:20px;box-shadow:0 8px 40px rgba(200,169,126,0.2);}
+    .calc-panel.show{display:block;}
+    .calc-display{background:#F7F5F2;padding:14px 16px;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;text-align:right;margin-bottom:14px;min-height:52px;color:#333;border:1.5px solid #EDE8E3;border-radius:12px;word-break:break-all;}
+    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+    .ck{background:#F7F5F2;border:none;color:#555;padding:12px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border-radius:10px;font-weight:500;}
+    .ck:hover{background:#EDE8E3;}
+    .ck.red{background:#C8A97E;color:#fff;font-weight:700;}
+    .ck.red:hover{background:#b8956a;}
+    .ck.op{color:#C8A97E;font-weight:600;}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Prob · Est</div>
+  <div class="title-block">
+    <h1>Probabilidad <span>&</span> Estadística</h1>
+    <div class="subtitle">Python · Flask · SymPy</div>
+  </div>
+  <div class="nav-right">Probabilidad y Estadisticas</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="mostrar('varianza',this)">01 · Varianza</button>
+  <button class="tab" onclick="mostrar('esperado',this)">02 · Valor Esperado</button>
+  <button class="tab" onclick="mostrar('normal',this)">03 · Normal</button>
+  <button class="tab" onclick="mostrar('integral',this)">04 · Integrales</button>
+  <button class="tab" onclick="window.location='/problemas'">05 · Problemas</button>
+</div>
+
+<div class="main">
+
+  <!-- VARIANZA -->
+  <div class="section active" id="sec-varianza">
+    <div class="section-label">Módulo 01</div>
+    <div class="section-title">Varianza</div>
+    <div class="section-desc">Ingresa un conjunto de datos separados por comas para calcular la varianza, media y desviación estándar.</div>
+    <div class="field-label">Conjunto de datos</div>
+    <input class="input" id="datos-varianza" placeholder="Ej: 4, 8, 15, 16, 23, 42">
+    <button class="btn" onclick="calcularVarianza()">Calcular →</button>
+    <div class="results" id="res-varianza">
+      <div class="divider"></div>
+      <div class="results-grid">
+        <div class="result-card"><div class="result-label">Varianza</div><div class="result-val" id="val-varianza">—</div></div>
+        <div class="result-card"><div class="result-label">Media</div><div class="result-val" id="val-media">—</div></div>
+        <div class="result-card"><div class="result-label">Desv. Estándar</div><div class="result-val" id="val-desv">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALOR ESPERADO -->
+  <div class="section" id="sec-esperado">
+    <div class="section-label">Módulo 02</div>
+    <div class="section-title">Valor Esperado</div>
+    <div class="section-desc">Ingresa los valores de X y sus probabilidades separados por comas. Las probabilidades deben sumar 1.</div>
+    <div class="field-label">Valores X</div>
+    <input class="input" id="valores-esp" placeholder="Ej: 1, 2, 3, 4, 5">
+    <div class="field-label">Probabilidades P(X)</div>
+    <input class="input" id="probs-esp" placeholder="Ej: 0.1, 0.2, 0.4, 0.2, 0.1">
+    <button class="btn" onclick="calcularEsperado()">Calcular →</button>
+    <div class="results" id="res-esperado">
+      <div class="divider"></div>
+      <div class="results-grid">
+        <div class="result-card"><div class="result-label">E(X)</div><div class="result-val" id="val-esperado">—</div></div>
+        <div class="result-card"><div class="result-label">Varianza</div><div class="result-val" id="val-var-esp">—</div></div>
+        <div class="result-card"><div class="result-label">Desv. Estándar</div><div class="result-val" id="val-desv-esp">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NORMAL -->
+  <div class="section" id="sec-normal">
+    <div class="section-label">Módulo 03</div>
+    <div class="section-title">Distribución Normal</div>
+    <div class="section-desc">Genera la gráfica de la distribución normal con los parámetros que definas.</div>
+    <div class="input-row">
+      <div><div class="field-label">Media (μ)</div><input class="input" id="media-normal" value="0"></div>
+      <div><div class="field-label">Desviación estándar (σ)</div><input class="input" id="des-normal" value="1"></div>
+    </div>
+    <button class="btn" onclick="graficaNormal()">Generar gráfica →</button>
+    <div class="results" id="res-normal">
+      <div class="divider"></div>
+      <img class="graph-img" id="img-normal">
+    </div>
+  </div>
+
+  <!-- INTEGRAL -->
+  <div class="section" id="sec-integral">
+    <div class="section-label">Módulo 04</div>
+    <div class="section-title">Integrales</div>
+    <div class="section-desc">Resuelve integrales indefinidas o definidas. Usa sintaxis Python: x**2, sin(x), exp(x), sqrt(x).</div>
+    <div class="field-label">Tipo de integral</div>
+    <select class="input" id="tipo-integral" style="max-width:240px;" onchange="toggleLimites()">
+      <option value="indefinida">Indefinida</option>
+      <option value="definida">Definida</option>
+    </select>
+    <div class="field-label">Expresión f(x)</div>
+    <input class="input" id="expr-integral" placeholder="Ej: x**2 + 3*x, sin(x), exp(-x**2)">
+    <div id="limites-row" style="display:none">
+      <div class="input-row">
+        <div><div class="field-label">Límite inferior (a)</div><input class="input" id="lim-a" value="0"></div>
+        <div><div class="field-label">Límite superior (b)</div><input class="input" id="lim-b" value="1"></div>
+      </div>
+    </div>
+    <button class="btn" onclick="resolverIntegral()">Resolver →</button>
+    <div class="integral-result" id="res-integral">
+      <div class="field-label">Resultado</div>
+      <div class="integral-val" id="val-integral"></div>
+    </div>
+  </div>
+
+</div>
+
+<button class="calc-toggle" onclick="toggleCalc()" title="Calculadora científica">∫</button>
+<div class="calc-panel" id="calc-panel">
+  <div style="font-size:9px;letter-spacing:3px;color:#bbb;margin-bottom:14px;text-transform:uppercase;font-weight:600;">Calculadora científica</div>
+  <div class="calc-display" id="calc-display">0</div>
+  <div class="calc-grid">
+    <button class="ck red" onclick="calcClear()">C</button>
+    <button class="ck op" onclick="calcInput('(')">(</button>
+    <button class="ck op" onclick="calcInput(')')">)</button>
+    <button class="ck op" onclick="calcInput('/')">÷</button>
+    <button class="ck" onclick="calcInput('7')">7</button>
+    <button class="ck" onclick="calcInput('8')">8</button>
+    <button class="ck" onclick="calcInput('9')">9</button>
+    <button class="ck op" onclick="calcInput('*')">×</button>
+    <button class="ck" onclick="calcInput('4')">4</button>
+    <button class="ck" onclick="calcInput('5')">5</button>
+    <button class="ck" onclick="calcInput('6')">6</button>
+    <button class="ck op" onclick="calcInput('-')">−</button>
+    <button class="ck" onclick="calcInput('1')">1</button>
+    <button class="ck" onclick="calcInput('2')">2</button>
+    <button class="ck" onclick="calcInput('3')">3</button>
+    <button class="ck op" onclick="calcInput('+')">+</button>
+    <button class="ck" onclick="calcInput('0')">0</button>
+    <button class="ck" onclick="calcInput('.')">.</button>
+    <button class="ck op" onclick="calcInput('**2')">x²</button>
+    <button class="ck red" onclick="calcEquals()">=</button>
+    <button class="ck op" onclick="calcInput('Math.sqrt(')">√</button>
+    <button class="ck op" onclick="calcInput('Math.log(')">ln</button>
+    <button class="ck op" onclick="calcInput('Math.PI')">π</button>
+    <button class="ck op" onclick="calcBack()">⌫</button>
+    <button class="ck op" onclick="calcInput('Math.sin(')">sin</button>
+    <button class="ck op" onclick="calcInput('Math.cos(')">cos</button>
+    <button class="ck op" onclick="calcInput('Math.tan(')">tan</button>
+    <button class="ck op" onclick="calcInput('Math.E')">e</button>
+  </div>
+</div>
+
+<script>
+  function mostrar(sec, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('sec-'+sec).classList.add('active');
+    if(btn) btn.classList.add('active');
+  }
+  function showResults(id) {
+    const el = document.getElementById(id);
+    el.classList.add('show');
+    el.style.display = 'block';
+  }
+  async function calcularVarianza() {
+    const datos = document.getElementById('datos-varianza').value;
+    showResults('res-varianza');
+    const res = await fetch('/varianza', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({datos})});
+    const data = await res.json();
+    document.getElementById('val-varianza').textContent = data.varianza;
+    document.getElementById('val-media').textContent = data.media;
+    document.getElementById('val-desv').textContent = data.desviacion;
+  }
+  async function calcularEsperado() {
+    const valores = document.getElementById('valores-esp').value;
+    const probabilidades = document.getElementById('probs-esp').value;
+    showResults('res-esperado');
+    const res = await fetch('/esperado', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({valores, probabilidades})});
+    const data = await res.json();
+    document.getElementById('val-esperado').textContent = data.esperado;
+    document.getElementById('val-var-esp').textContent = data.varianza;
+    document.getElementById('val-desv-esp').textContent = data.desviacion;
+  }
+  async function graficaNormal() {
+    const media = document.getElementById('media-normal').value;
+    const desviacion = document.getElementById('des-normal').value;
+    showResults('res-normal');
+    const res = await fetch('/normal', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({media, desviacion})});
+    const data = await res.json();
+    document.getElementById('img-normal').src = 'data:image/png;base64,' + data.imagen;
+  }
+  function toggleLimites() {
+    document.getElementById('limites-row').style.display =
+      document.getElementById('tipo-integral').value === 'definida' ? 'block' : 'none';
+  }
+  async function resolverIntegral() {
+    const expresion = document.getElementById('expr-integral').value;
+    const tipo = document.getElementById('tipo-integral').value;
+    const limite_a = document.getElementById('lim-a').value;
+    const limite_b = document.getElementById('lim-b').value;
+    document.getElementById('res-integral').classList.add('show');
+    const res = await fetch('/integral', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({expresion, tipo, limite_a, limite_b})});
+    const data = await res.json();
+    document.getElementById('val-integral').textContent = data.exito
+      ? data.resultado + (data.resultado_num !== null ? ` = ${data.resultado_num.toFixed(4)}` : '')
+      : 'Error: ' + data.error;
+  }
+  let calcExpr = '';
+  function toggleCalc() { document.getElementById('calc-panel').classList.toggle('show'); }
+  function calcInput(v) {
+    if(calcExpr === '0') calcExpr = '';
+    calcExpr += v;
+    document.getElementById('calc-display').textContent = calcExpr;
+  }
+  function calcClear() { calcExpr = '0'; document.getElementById('calc-display').textContent = '0'; }
+  function calcBack() { calcExpr = calcExpr.slice(0,-1) || '0'; document.getElementById('calc-display').textContent = calcExpr; }
+  function calcEquals() {
+    try {
+      calcExpr = String(parseFloat(eval(calcExpr).toFixed(10)));
+      document.getElementById('calc-display').textContent = calcExpr;
+    } catch { document.getElementById('calc-display').textContent = 'Error'; calcExpr = ''; }
+  }
+</script>
+</body>
+</html>
