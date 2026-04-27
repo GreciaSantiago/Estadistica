@@ -3,68 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Probabilidad y Estadística</title>
+  <title>Problemas · Distribución Normal</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#F7F5F2;color:#333333;font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+    body{background:#F0EBE3;color:#1a1a1a;font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-    .header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:#fff;border-bottom:1px solid #EDE8E3;box-shadow:0 2px 12px rgba(200,169,126,0.08);}
-    .logo{font-size:11px;letter-spacing:4px;color:#C8A97E;text-transform:uppercase;font-weight:600;}
+    .header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:#fff;border-bottom:2px solid #D4B896;box-shadow:0 2px 16px rgba(180,140,90,0.12);}
+    .logo{font-size:12px;letter-spacing:4px;color:#8B6340;text-transform:uppercase;font-weight:700;}
     .title-block{text-align:center;}
-    .title-block h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#333;letter-spacing:-0.5px;}
-    .title-block h1 span{color:#C8A97E;}
-    .subtitle{font-size:10px;letter-spacing:5px;color:#bbb;text-transform:uppercase;margin-top:4px;}
-    .nav-right{font-size:11px;letter-spacing:2px;color:#bbb;}
+    .title-block h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#1a1a1a;}
+    .title-block h1 span{color:#A0692A;}
+    .subtitle{font-size:11px;letter-spacing:5px;color:#8B6340;text-transform:uppercase;margin-top:5px;font-weight:600;}
 
-    .tabs{display:flex;background:#fff;border-bottom:1px solid #EDE8E3;overflow-x:auto;padding:0 48px;}
-    .tab{padding:16px 24px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:#bbb;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-    .tab:hover{color:#C8A97E;}
-    .tab.active{color:#C8A97E;border-bottom:2px solid #C8A97E;}
+    .back{display:inline-flex;align-items:center;gap:8px;margin:32px 48px 0;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#A0692A;text-decoration:none;transition:all .2s;}
+    .back:hover{color:#7a4f1e;gap:12px;}
 
-    .main{padding:48px;max-width:860px;margin:0 auto;}
+    .page-title{text-align:center;padding:32px 48px 0;}
+    .page-title h2{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#1a1a1a;}
+    .page-title p{font-size:14px;color:#666;margin-top:8px;font-weight:500;}
 
-    .section{display:none;}
-    .section.active{display:block;}
-    .section-label{font-size:10px;letter-spacing:4px;color:#C8A97E;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
-    .section-title{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;line-height:1;margin-bottom:10px;color:#333;}
-    .section-desc{font-size:14px;color:#888;margin-bottom:36px;line-height:1.7;}
+    .formula-box{background:#fff;border:2px solid #D4B896;border-radius:16px;padding:20px 28px;max-width:440px;margin:24px auto 0;text-align:center;box-shadow:0 4px 16px rgba(180,140,90,0.1);}
+    .formula-box .label{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 
-    .field-label{font-size:10px;letter-spacing:3px;color:#aaa;text-transform:uppercase;margin-bottom:8px;font-weight:600;}
-    .input{width:100%;background:#fff;border:1.5px solid #EDE8E3;color:#333;padding:14px 18px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(200,169,126,0.06);}
-    .input:focus{border-color:#C8A97E;box-shadow:0 2px 16px rgba(200,169,126,0.15);}
-    .input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-    select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23C8A97E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer;}
+    .problemas{max-width:900px;margin:40px auto;padding:0 48px 60px;}
 
-    .btn{background:#C8A97E;color:#fff;border:none;padding:14px 36px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:50px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(200,169,126,0.3);}
-    .btn:hover{background:#b8956a;box-shadow:0 6px 20px rgba(200,169,126,0.4);transform:translateY(-1px);}
-    .btn:active{transform:translateY(0);}
+    .problema{background:#fff;border:2px solid #D4B896;border-radius:20px;padding:32px;margin-bottom:28px;box-shadow:0 4px 20px rgba(180,140,90,0.1);}
+    .problema-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .num{background:#A0692A;color:#fff;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;flex-shrink:0;}
+    .problema-titulo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#1a1a1a;}
+    .fuente{font-size:11px;color:#A0692A;font-weight:600;letter-spacing:1px;margin-top:3px;}
 
-    .results{margin-top:36px;display:none;}
-    .results.show{display:block;}
-    .results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
-    .result-card{background:#fff;padding:24px 20px;text-align:center;border-radius:16px;box-shadow:0 4px 20px rgba(200,169,126,0.1);border:1.5px solid #EDE8E3;}
-    .result-label{font-size:9px;letter-spacing:3px;color:#bbb;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
-    .result-val{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:#C8A97E;}
-    .graph-img{width:100%;border-radius:16px;border:1.5px solid #EDE8E3;margin-bottom:24px;box-shadow:0 4px 20px rgba(200,169,126,0.1);}
+    .enunciado{font-size:15px;color:#333;line-height:1.8;margin-bottom:24px;padding:18px 22px;background:#F0EBE3;border-radius:12px;border-left:4px solid #A0692A;}
 
-    .integral-result{background:#fff;border:1.5px solid #EDE8E3;padding:24px;margin-top:24px;display:none;border-radius:16px;box-shadow:0 4px 20px rgba(200,169,126,0.1);}
-    .integral-result.show{display:block;}
-    .integral-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#C8A97E;margin:10px 0;}
+    .pasos{margin-bottom:20px;}
+    .paso{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #EDE8E3;}
+    .paso:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+    .paso-titulo{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+    .paso-contenido{font-size:15px;color:#333;line-height:1.9;padding-left:4px;}
 
-    .divider{height:1px;background:linear-gradient(to right,transparent,#EDE8E3,transparent);margin:32px 0;}
+    .resultado{background:#A0692A;color:#fff;border-radius:12px;padding:16px 22px;font-size:15px;font-weight:600;line-height:1.7;margin-top:4px;}
+    .resultado strong{font-family:'Playfair Display',serif;font-size:18px;}
 
-    .calc-toggle{position:fixed;bottom:30px;right:30px;width:54px;height:54px;background:#C8A97E;border:none;color:#fff;font-size:22px;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 4px 20px rgba(200,169,126,0.4);transition:all .2s;}
-    .calc-toggle:hover{background:#b8956a;transform:scale(1.05);}
-    .calc-panel{position:fixed;bottom:100px;right:30px;width:284px;background:#fff;border:1.5px solid #EDE8E3;z-index:100;display:none;padding:20px;border-radius:20px;box-shadow:0 8px 40px rgba(200,169,126,0.2);}
-    .calc-panel.show{display:block;}
-    .calc-display{background:#F7F5F2;padding:14px 16px;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;text-align:right;margin-bottom:14px;min-height:52px;color:#333;border:1.5px solid #EDE8E3;border-radius:12px;word-break:break-all;}
-    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-    .ck{background:#F7F5F2;border:none;color:#555;padding:12px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border-radius:10px;font-weight:500;}
-    .ck:hover{background:#EDE8E3;}
-    .ck.red{background:#C8A97E;color:#fff;font-weight:700;}
-    .ck.red:hover{background:#b8956a;}
-    .ck.op{color:#C8A97E;font-weight:600;}
+    .grafica-container{margin-top:20px;background:#F0EBE3;border-radius:12px;padding:16px 20px;border:1px solid #D4B896;}
+    .grafica-titulo{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;font-weight:700;margin-bottom:12px;text-align:center;}
+    canvas{max-height:160px;}
+
+    /* BIBLIOGRAFÍA */
+    .biblio-section{max-width:900px;margin:0 auto;padding:0 48px 60px;}
+    .biblio-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#1a1a1a;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid #D4B896;}
+    .biblio-item{background:#fff;border:1.5px solid #EDE8E3;border-radius:14px;padding:20px 24px;margin-bottom:16px;box-shadow:0 2px 10px rgba(180,140,90,0.07);}
+    .biblio-num{font-size:10px;letter-spacing:3px;color:#A0692A;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .biblio-autor{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;}
+    .biblio-detalle{font-size:13px;color:#666;line-height:1.7;}
+    .biblio-detalle a{color:#A0692A;text-decoration:none;word-break:break-all;}
+    .biblio-detalle a:hover{text-decoration:underline;}
   </style>
 </head>
 <body>
@@ -73,208 +75,466 @@
   <div class="logo">Prob · Est</div>
   <div class="title-block">
     <h1>Probabilidad <span>&</span> Estadística</h1>
-    <div class="subtitle">Python · Flask · SymPy</div>
+    <div class="subtitle">GS · AC</div>
   </div>
-  <div class="nav-right">Probabilidad y Estadisticas</div>
+  <div style="width:80px"></div>
 </div>
 
-<div class="tabs">
-  <button class="tab active" onclick="mostrar('varianza',this)">01 · Varianza</button>
-  <button class="tab" onclick="mostrar('esperado',this)">02 · Valor Esperado</button>
-  <button class="tab" onclick="mostrar('normal',this)">03 · Normal</button>
-  <button class="tab" onclick="mostrar('integral',this)">04 · Integrales</button>
-  <button class="tab" onclick="window.location='/problemas'">05 · Problemas</button>
+<a class="back" href="/">← Volver</a>
+
+<div class="page-title">
+  <h2>Distribución Normal</h2>
+  <p>10 problemas resueltos paso a paso · con gráfica</p>
 </div>
 
-<div class="main">
+<div class="formula-box">
+  <div class="label">Fórmula base de estandarización</div>
+  $$z = \frac{x - \mu}{\sigma}$$
+</div>
 
-  <!-- VARIANZA -->
-  <div class="section active" id="sec-varianza">
-    <div class="section-label">Módulo 01</div>
-    <div class="section-title">Varianza</div>
-    <div class="section-desc">Ingresa un conjunto de datos separados por comas para calcular la varianza, media y desviación estándar.</div>
-    <div class="field-label">Conjunto de datos</div>
-    <input class="input" id="datos-varianza" placeholder="Ej: 4, 8, 15, 16, 23, 42">
-    <button class="btn" onclick="calcularVarianza()">Calcular →</button>
-    <div class="results" id="res-varianza">
-      <div class="divider"></div>
-      <div class="results-grid">
-        <div class="result-card"><div class="result-label">Varianza</div><div class="result-val" id="val-varianza">—</div></div>
-        <div class="result-card"><div class="result-label">Media</div><div class="result-val" id="val-media">—</div></div>
-        <div class="result-card"><div class="result-label">Desv. Estándar</div><div class="result-val" id="val-desv">—</div></div>
+<div class="problemas">
+
+  <!-- PROBLEMA 1 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">1</div>
+      <div>
+        <div class="problema-titulo">Temperatura en junio</div>
+        <div class="fuente">Matemáticas Online — Ejercicios de Distribución Normal, Bachillerato CCNN</div>
       </div>
+    </div>
+    <div class="enunciado">En una ciudad, la temperatura máxima en junio sigue una distribución normal con media $\mu = 23°C$ y desviación típica $\sigma = 5°C$. ¿Cuántos días del mes se esperan con máximas entre 21°C y 27°C?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Identificar datos</div>
+        <div class="paso-contenido">$$\mu = 23, \quad \sigma = 5, \quad x_1 = 21, \quad x_2 = 27$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z_1 = \frac{21 - 23}{5} = \frac{-2}{5} = -0.40 \qquad z_2 = \frac{27 - 23}{5} = \frac{4}{5} = 0.80$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < 0.80) = 0.7881 \qquad P(Z < -0.40) = 1 - P(Z < 0.40) = 1 - 0.6554 = 0.3446$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Probabilidad del intervalo</div>
+        <div class="paso-contenido">$$P(21 < X < 27) = 0.7881 - 0.3446 = 0.4435$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 5 — Días esperados (junio = 30 días)</div>
+        <div class="paso-contenido">$$30 \times 0.4435 \approx 13 \text{ días}$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Se esperan aproximadamente <strong>13 días</strong> con temperaturas entre 21°C y 27°C.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(21 < X < 27)$</div>
+      <canvas id="g1"></canvas>
     </div>
   </div>
 
-  <!-- VALOR ESPERADO -->
-  <div class="section" id="sec-esperado">
-    <div class="section-label">Módulo 02</div>
-    <div class="section-title">Valor Esperado</div>
-    <div class="section-desc">Ingresa los valores de X y sus probabilidades separados por comas. Las probabilidades deben sumar 1.</div>
-    <div class="field-label">Valores X</div>
-    <input class="input" id="valores-esp" placeholder="Ej: 1, 2, 3, 4, 5">
-    <div class="field-label">Probabilidades P(X)</div>
-    <input class="input" id="probs-esp" placeholder="Ej: 0.1, 0.2, 0.4, 0.2, 0.1">
-    <button class="btn" onclick="calcularEsperado()">Calcular →</button>
-    <div class="results" id="res-esperado">
-      <div class="divider"></div>
-      <div class="results-grid">
-        <div class="result-card"><div class="result-label">E(X)</div><div class="result-val" id="val-esperado">—</div></div>
-        <div class="result-card"><div class="result-label">Varianza</div><div class="result-val" id="val-var-esp">—</div></div>
-        <div class="result-card"><div class="result-label">Desv. Estándar</div><div class="result-val" id="val-desv-esp">—</div></div>
+  <!-- PROBLEMA 2 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">2</div>
+      <div>
+        <div class="problema-titulo">Pesos de estudiantes</div>
+        <div class="fuente">Distribución Normal — Ejemplos y Ejercicios Resueltos, IES Oja (matematicasiesoja.wordpress.com)</div>
       </div>
+    </div>
+    <div class="enunciado">Los pesos de 500 estudiantes siguen una distribución normal con media $\mu = 70$ kg y $\sigma = 3$ kg. ¿Cuántos pesan entre 65 y 74 kg?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Identificar datos</div>
+        <div class="paso-contenido">$$\mu = 70, \quad \sigma = 3, \quad x_1 = 65, \quad x_2 = 74, \quad N = 500$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z_1 = \frac{65 - 70}{3} = \frac{-5}{3} = -1.67 \qquad z_2 = \frac{74 - 70}{3} = \frac{4}{3} = 1.33$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < 1.33) = 0.9082 \qquad P(Z < -1.67) = 1 - 0.9525 = 0.0475$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Probabilidad del intervalo</div>
+        <div class="paso-contenido">$$P(65 < X < 74) = 0.9082 - 0.0475 = 0.8607$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 5 — Número de estudiantes</div>
+        <div class="paso-contenido">$$500 \times 0.8607 \approx 430 \text{ estudiantes}$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Aproximadamente <strong>430 estudiantes</strong> pesan entre 65 y 74 kg.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(65 < X < 74)$</div>
+      <canvas id="g2"></canvas>
     </div>
   </div>
 
-  <!-- NORMAL -->
-  <div class="section" id="sec-normal">
-    <div class="section-label">Módulo 03</div>
-    <div class="section-title">Distribución Normal</div>
-    <div class="section-desc">Genera la gráfica de la distribución normal con los parámetros que definas.</div>
-    <div class="input-row">
-      <div><div class="field-label">Media (μ)</div><input class="input" id="media-normal" value="0"></div>
-      <div><div class="field-label">Desviación estándar (σ)</div><input class="input" id="des-normal" value="1"></div>
+  <!-- PROBLEMA 3 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">3</div>
+      <div>
+        <div class="problema-titulo">Ensamblaje de automóviles</div>
+        <div class="fuente">AnalyzeMath — Problemas de Distribución Normal con Soluciones (analyzemath.com/spanish)</div>
+      </div>
     </div>
-    <button class="btn" onclick="graficaNormal()">Generar gráfica →</button>
-    <div class="results" id="res-normal">
-      <div class="divider"></div>
-      <img class="graph-img" id="img-normal">
+    <div class="enunciado">El tiempo de ensamblaje de un automóvil en una planta sigue $N(20, 2)$. ¿Cuál es la probabilidad de que un auto se ensamble en menos de 19.5 horas?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 20 \text{ horas}, \quad \sigma = 2 \text{ horas}, \quad x = 19.5$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z = \frac{19.5 - 20}{2} = \frac{-0.5}{2} = -0.25$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < -0.25) = 1 - P(Z < 0.25) = 1 - 0.5987 = 0.4013$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Hay un <strong>40.13%</strong> de probabilidad de que el auto se ensamble en menos de 19.5 horas.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(X < 19.5)$</div>
+      <canvas id="g3"></canvas>
     </div>
   </div>
 
-  <!-- INTEGRAL -->
-  <div class="section" id="sec-integral">
-    <div class="section-label">Módulo 04</div>
-    <div class="section-title">Integrales</div>
-    <div class="section-desc">Resuelve integrales indefinidas o definidas. Usa sintaxis Python: x**2, sin(x), exp(x), sqrt(x).</div>
-    <div class="field-label">Tipo de integral</div>
-    <select class="input" id="tipo-integral" style="max-width:240px;" onchange="toggleLimites()">
-      <option value="indefinida">Indefinida</option>
-      <option value="definida">Definida</option>
-    </select>
-    <div class="field-label">Expresión f(x)</div>
-    <input class="input" id="expr-integral" placeholder="Ej: x**2 + 3*x, sin(x), exp(-x**2)">
-    <div id="limites-row" style="display:none">
-      <div class="input-row">
-        <div><div class="field-label">Límite inferior (a)</div><input class="input" id="lim-a" value="0"></div>
-        <div><div class="field-label">Límite superior (b)</div><input class="input" id="lim-b" value="1"></div>
+  <!-- PROBLEMA 4 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">4</div>
+      <div>
+        <div class="problema-titulo">Batería de computadora</div>
+        <div class="fuente">AnalyzeMath — Problemas de Distribución Normal con Soluciones (analyzemath.com/spanish)</div>
       </div>
     </div>
-    <button class="btn" onclick="resolverIntegral()">Resolver →</button>
-    <div class="integral-result" id="res-integral">
-      <div class="field-label">Resultado</div>
-      <div class="integral-val" id="val-integral"></div>
+    <div class="enunciado">El tiempo entre cargas de batería sigue $N(50, 15)$. ¿Cuál es la probabilidad de que dure entre 50 y 70 horas?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 50 \text{ horas}, \quad \sigma = 15 \text{ horas}, \quad x_1 = 50, \quad x_2 = 70$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z_1 = \frac{50 - 50}{15} = 0.00 \qquad z_2 = \frac{70 - 50}{15} = \frac{20}{15} = 1.33$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < 1.33) = 0.9082 \qquad P(Z < 0.00) = 0.5000$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Probabilidad</div>
+        <div class="paso-contenido">$$P(50 < X < 70) = 0.9082 - 0.5000 = 0.4082$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Hay un <strong>40.82%</strong> de probabilidad de que la batería dure entre 50 y 70 horas.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(50 < X < 70)$</div>
+      <canvas id="g4"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 5 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">5</div>
+      <div>
+        <div class="problema-titulo">Colesterol en hombres mayores de 50 años</div>
+        <div class="fuente">Matemóvil — Distribución Normal, Ejercicios Resueltos (matemovil.com)</div>
+      </div>
+    </div>
+    <div class="enunciado">El nivel de colesterol sigue $N(210, 15)$ mg/dl. ¿Qué porcentaje tiene nivel superior a 250 mg/dl?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 210, \quad \sigma = 15, \quad x = 250$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z = \frac{250 - 210}{15} = \frac{40}{15} = 2.67$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z · Cola derecha</div>
+        <div class="paso-contenido">$$P(X > 250) = 1 - P(Z < 2.67) = 1 - 0.9962 = 0.0038$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Solo el <strong>0.38%</strong> de los hombres tiene colesterol mayor a 250 mg/dl.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(X > 250)$</div>
+      <canvas id="g5"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 6 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">6</div>
+      <div>
+        <div class="problema-titulo">Salarios anuales en empresa</div>
+        <div class="fuente">AnalyzeMath — Problemas de Distribución Normal con Soluciones (analyzemath.com/spanish)</div>
+      </div>
+    </div>
+    <div class="enunciado">Los salarios anuales siguen $N(\$50{,}000,\ \$20{,}000)$. ¿Qué porcentaje gana menos de $\$40{,}000$?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = \$50{,}000, \quad \sigma = \$20{,}000, \quad x = \$40{,}000$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z = \frac{40{,}000 - 50{,}000}{20{,}000} = \frac{-10{,}000}{20{,}000} = -0.50$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < -0.50) = 1 - P(Z < 0.50) = 1 - 0.6915 = 0.3085$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ El <strong>30.85%</strong> de los empleados gana menos de $40,000 al año.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(X < \$40{,}000)$</div>
+      <canvas id="g6"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 7 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">7</div>
+      <div>
+        <div class="problema-titulo">Talla de recién nacidos</div>
+        <div class="fuente">Universidad de Antofagasta — Ejercicios Resueltos de Distribución Normal, Estadística para Bachillerato (intranetua.uantof.cl). Prof. E. Rodríguez, Ayudante R. Meza.</div>
+      </div>
+    </div>
+    <div class="enunciado">La talla al nacer sigue $N(50\ \text{cm},\ 2\ \text{cm})$. Si nacen 200 bebés en un mes, ¿cuántos miden entre 48 y 52 cm?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 50, \quad \sigma = 2, \quad x_1 = 48, \quad x_2 = 52, \quad N = 200$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z_1 = \frac{48 - 50}{2} = -1.00 \qquad z_2 = \frac{52 - 50}{2} = 1.00$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z · Regla del 68% $(\pm 1\sigma)$</div>
+        <div class="paso-contenido">$$P(48 < X < 52) = 0.8413 - 0.1587 = 0.6826$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Número de bebés</div>
+        <div class="paso-contenido">$$200 \times 0.6826 \approx 137 \text{ bebés}$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Aproximadamente <strong>137 bebés</strong> miden entre 48 y 52 cm.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(48 < X < 52)$ — Regla $\pm 1\sigma$</div>
+      <canvas id="g7"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 8 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">8</div>
+      <div>
+        <div class="problema-titulo">Sueldos de recién graduados</div>
+        <div class="fuente">Matematicasonline.es — Ejercicios de Distribución Normal, 2º Bachillerato Ciencias Sociales</div>
+      </div>
+    </div>
+    <div class="enunciado">El sueldo mensual de recién graduados sigue $N(1300€,\ 600€)$. ¿Qué porcentaje cobra menos de 600€?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 1300, \quad \sigma = 600, \quad x = 600$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z = \frac{600 - 1300}{600} = \frac{-700}{600} = -1.17$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < -1.17) = 1 - P(Z < 1.17) = 1 - 0.8790 = 0.1210$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ El <strong>12.10%</strong> de los recién graduados cobra menos de 600€ al mes.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(X < 600€)$</div>
+      <canvas id="g8"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 9 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">9</div>
+      <div>
+        <div class="problema-titulo">Agua embotellada</div>
+        <div class="fuente">Matemóvil — Distribución Normal, Ejercicios Resueltos Nivel 3 (matemovil.com)</div>
+      </div>
+    </div>
+    <div class="enunciado">Una máquina llena botellas según $N(500\ \text{ml},\ \sigma^2 = 25\ \text{ml}^2)$, por tanto $\sigma = \sqrt{25} = 5$. ¿Qué porcentaje contiene entre 495 y 508 ml?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 500, \quad \sigma^2 = 25 \Rightarrow \sigma = 5, \quad x_1 = 495, \quad x_2 = 508$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z_1 = \frac{495 - 500}{5} = \frac{-5}{5} = -1.00 \qquad z_2 = \frac{508 - 500}{5} = \frac{8}{5} = 1.60$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z</div>
+        <div class="paso-contenido">$$P(Z < 1.60) = 0.9452 \qquad P(Z < -1.00) = 1 - 0.8413 = 0.1587$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Probabilidad</div>
+        <div class="paso-contenido">$$P(495 < X < 508) = 0.9452 - 0.1587 = 0.7865$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ El <strong>78.65%</strong> de las botellas contiene entre 495 y 508 ml.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(495 < X < 508)$</div>
+      <canvas id="g9"></canvas>
+    </div>
+  </div>
+
+  <!-- PROBLEMA 10 -->
+  <div class="problema">
+    <div class="problema-header">
+      <div class="num">10</div>
+      <div>
+        <div class="problema-titulo">Coeficiente Intelectual (CI)</div>
+        <div class="fuente">Universidad de Valencia — Ejercicios Distribución Normal I (uv.es/ceaces)</div>
+      </div>
+    </div>
+    <div class="enunciado">El CI humano sigue $N(100, 15)$. En una ciudad de 1,000,000 de personas, ¿cuántas tienen $CI > 130$?</div>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-titulo">Paso 1 — Datos</div>
+        <div class="paso-contenido">$$\mu = 100, \quad \sigma = 15, \quad x = 130, \quad N = 1{,}000{,}000$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 2 — Estandarizar</div>
+        <div class="paso-contenido">$$z = \frac{130 - 100}{15} = \frac{30}{15} = 2.00$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 3 — Tabla Z · Cola derecha</div>
+        <div class="paso-contenido">$$P(X > 130) = 1 - P(Z < 2.00) = 1 - 0.9772 = 0.0228 \quad (2.28\%)$$</div>
+      </div>
+      <div class="paso">
+        <div class="paso-titulo">Paso 4 — Número de personas</div>
+        <div class="paso-contenido">$$1{,}000{,}000 \times 0.0228 = 22{,}800 \text{ personas}$$</div>
+      </div>
+    </div>
+    <div class="resultado">✦ Aproximadamente <strong>22,800 personas</strong> tienen un CI mayor a 130.</div>
+    <div class="grafica-container">
+      <div class="grafica-titulo">Área sombreada: $P(X > 130)$</div>
+      <canvas id="g10"></canvas>
     </div>
   </div>
 
 </div>
 
-<button class="calc-toggle" onclick="toggleCalc()" title="Calculadora científica">∫</button>
-<div class="calc-panel" id="calc-panel">
-  <div style="font-size:9px;letter-spacing:3px;color:#bbb;margin-bottom:14px;text-transform:uppercase;font-weight:600;">Calculadora científica</div>
-  <div class="calc-display" id="calc-display">0</div>
-  <div class="calc-grid">
-    <button class="ck red" onclick="calcClear()">C</button>
-    <button class="ck op" onclick="calcInput('(')">(</button>
-    <button class="ck op" onclick="calcInput(')')">)</button>
-    <button class="ck op" onclick="calcInput('/')">÷</button>
-    <button class="ck" onclick="calcInput('7')">7</button>
-    <button class="ck" onclick="calcInput('8')">8</button>
-    <button class="ck" onclick="calcInput('9')">9</button>
-    <button class="ck op" onclick="calcInput('*')">×</button>
-    <button class="ck" onclick="calcInput('4')">4</button>
-    <button class="ck" onclick="calcInput('5')">5</button>
-    <button class="ck" onclick="calcInput('6')">6</button>
-    <button class="ck op" onclick="calcInput('-')">−</button>
-    <button class="ck" onclick="calcInput('1')">1</button>
-    <button class="ck" onclick="calcInput('2')">2</button>
-    <button class="ck" onclick="calcInput('3')">3</button>
-    <button class="ck op" onclick="calcInput('+')">+</button>
-    <button class="ck" onclick="calcInput('0')">0</button>
-    <button class="ck" onclick="calcInput('.')">.</button>
-    <button class="ck op" onclick="calcInput('**2')">x²</button>
-    <button class="ck red" onclick="calcEquals()">=</button>
-    <button class="ck op" onclick="calcInput('Math.sqrt(')">√</button>
-    <button class="ck op" onclick="calcInput('Math.log(')">ln</button>
-    <button class="ck op" onclick="calcInput('Math.PI')">π</button>
-    <button class="ck op" onclick="calcBack()">⌫</button>
-    <button class="ck op" onclick="calcInput('Math.sin(')">sin</button>
-    <button class="ck op" onclick="calcInput('Math.cos(')">cos</button>
-    <button class="ck op" onclick="calcInput('Math.tan(')">tan</button>
-    <button class="ck op" onclick="calcInput('Math.E')">e</button>
+<!-- BIBLIOGRAFÍA -->
+<div class="biblio-section">
+  <div class="biblio-title">Bibliografía</div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 01</div>
+    <div class="biblio-autor">Matematicasonline.es (2023)</div>
+    <div class="biblio-detalle">Ejercicios de distribución normal — 2º Bachillerato CCNN.<br>
+    <a href="https://www.matematicasonline.es/BachilleratoCCNN/Segundo/ejercicios3/normal.pdf" target="_blank">https://www.matematicasonline.es/BachilleratoCCNN/Segundo/ejercicios3/normal.pdf</a></div>
   </div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 02</div>
+    <div class="biblio-autor">IES Oja (2018)</div>
+    <div class="biblio-detalle">Distribución Normal: ejemplos y ejercicios resueltos.<br>
+    <a href="https://matematicasiesoja.wordpress.com" target="_blank">https://matematicasiesoja.wordpress.com</a></div>
+  </div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 03</div>
+    <div class="biblio-autor">Matemóvil (2021)</div>
+    <div class="biblio-detalle">Distribución normal: ejercicios resueltos — niveles 1, 2 y 3.<br>
+    <a href="https://matemovil.com/distribucion-normal-ejercicios-resueltos/" target="_blank">https://matemovil.com/distribucion-normal-ejercicios-resueltos/</a></div>
+  </div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 04</div>
+    <div class="biblio-autor">AnalyzeMath (s.f.)</div>
+    <div class="biblio-detalle">Problemas de distribución normal con soluciones.<br>
+    <a href="https://www.analyzemath.com/spanish/statistics/normal_distribution.html" target="_blank">https://www.analyzemath.com/spanish/statistics/normal_distribution.html</a></div>
+  </div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 05</div>
+    <div class="biblio-autor">Universidad de Antofagasta — Departamento de Matemáticas (2004)</div>
+    <div class="biblio-detalle">Ejercicios resueltos — Distribución Normal, Estadística para Bachillerato.<br>
+    Profesor E. Rodríguez, Ayudante R. Meza.<br>
+    <a href="https://intranetua.uantof.cl" target="_blank">https://intranetua.uantof.cl</a></div>
+  </div>
+
+  <div class="biblio-item">
+    <div class="biblio-num">Fuente 06</div>
+    <div class="biblio-autor">Universidad de Valencia (s.f.)</div>
+    <div class="biblio-detalle">Ejercicios sobre distribución normal I.<br>
+    <a href="https://www.uv.es/ceaces/proble/normal/normal1.htm" target="_blank">https://www.uv.es/ceaces/proble/normal/normal1.htm</a></div>
+  </div>
+
 </div>
 
 <script>
-  function mostrar(sec, btn) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('sec-'+sec).classList.add('active');
-    if(btn) btn.classList.add('active');
+function normalPDF(x, mu, sigma) {
+  return Math.exp(-0.5 * ((x - mu) / sigma) ** 2) / (sigma * Math.sqrt(2 * Math.PI));
+}
+function makeData(mu, sigma, x1, x2, tipo) {
+  const min = mu - 4 * sigma, max = mu + 4 * sigma, steps = 120;
+  const labels = [], base = [], shade = [];
+  for (let i = 0; i <= steps; i++) {
+    const x = min + (max - min) * i / steps;
+    const y = normalPDF(x, mu, sigma);
+    labels.push(x.toFixed(2));
+    base.push(y);
+    let s = 0;
+    if (tipo === 'between' && x >= x1 && x <= x2) s = y;
+    if (tipo === 'left' && x <= x1) s = y;
+    if (tipo === 'right' && x >= x1) s = y;
+    shade.push(s);
   }
-  function showResults(id) {
-    const el = document.getElementById(id);
-    el.classList.add('show');
-    el.style.display = 'block';
-  }
-  async function calcularVarianza() {
-    const datos = document.getElementById('datos-varianza').value;
-    showResults('res-varianza');
-    const res = await fetch('/varianza', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({datos})});
-    const data = await res.json();
-    document.getElementById('val-varianza').textContent = data.varianza;
-    document.getElementById('val-media').textContent = data.media;
-    document.getElementById('val-desv').textContent = data.desviacion;
-  }
-  async function calcularEsperado() {
-    const valores = document.getElementById('valores-esp').value;
-    const probabilidades = document.getElementById('probs-esp').value;
-    showResults('res-esperado');
-    const res = await fetch('/esperado', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({valores, probabilidades})});
-    const data = await res.json();
-    document.getElementById('val-esperado').textContent = data.esperado;
-    document.getElementById('val-var-esp').textContent = data.varianza;
-    document.getElementById('val-desv-esp').textContent = data.desviacion;
-  }
-  async function graficaNormal() {
-    const media = document.getElementById('media-normal').value;
-    const desviacion = document.getElementById('des-normal').value;
-    showResults('res-normal');
-    const res = await fetch('/normal', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({media, desviacion})});
-    const data = await res.json();
-    document.getElementById('img-normal').src = 'data:image/png;base64,' + data.imagen;
-  }
-  function toggleLimites() {
-    document.getElementById('limites-row').style.display =
-      document.getElementById('tipo-integral').value === 'definida' ? 'block' : 'none';
-  }
-  async function resolverIntegral() {
-    const expresion = document.getElementById('expr-integral').value;
-    const tipo = document.getElementById('tipo-integral').value;
-    const limite_a = document.getElementById('lim-a').value;
-    const limite_b = document.getElementById('lim-b').value;
-    document.getElementById('res-integral').classList.add('show');
-    const res = await fetch('/integral', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({expresion, tipo, limite_a, limite_b})});
-    const data = await res.json();
-    document.getElementById('val-integral').textContent = data.exito
-      ? data.resultado + (data.resultado_num !== null ? ` = ${data.resultado_num.toFixed(4)}` : '')
-      : 'Error: ' + data.error;
-  }
-  let calcExpr = '';
-  function toggleCalc() { document.getElementById('calc-panel').classList.toggle('show'); }
-  function calcInput(v) {
-    if(calcExpr === '0') calcExpr = '';
-    calcExpr += v;
-    document.getElementById('calc-display').textContent = calcExpr;
-  }
-  function calcClear() { calcExpr = '0'; document.getElementById('calc-display').textContent = '0'; }
-  function calcBack() { calcExpr = calcExpr.slice(0,-1) || '0'; document.getElementById('calc-display').textContent = calcExpr; }
-  function calcEquals() {
-    try {
-      calcExpr = String(parseFloat(eval(calcExpr).toFixed(10)));
-      document.getElementById('calc-display').textContent = calcExpr;
-    } catch { document.getElementById('calc-display').textContent = 'Error'; calcExpr = ''; }
-  }
+  return { labels, base, shade };
+}
+function drawChart(id, mu, sigma, x1, x2, tipo) {
+  const { labels, base, shade } = makeData(mu, sigma, x1, x2, tipo);
+  new Chart(document.getElementById(id), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { data: shade, fill: true, backgroundColor: 'rgba(160,105,42,0.35)', borderColor: 'transparent', pointRadius: 0, tension: 0.4 },
+        { data: base, fill: false, borderColor: '#A0692A', borderWidth: 2.5, pointRadius: 0, tension: 0.4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: { x: { display: false }, y: { display: false } }
+    }
+  });
+}
+drawChart('g1', 23, 5, 21, 27, 'between');
+drawChart('g2', 70, 3, 65, 74, 'between');
+drawChart('g3', 20, 2, 19.5, null, 'left');
+drawChart('g4', 50, 15, 50, 70, 'between');
+drawChart('g5', 210, 15, 250, null, 'right');
+drawChart('g6', 50000, 20000, 40000, null, 'left');
+drawChart('g7', 50, 2, 48, 52, 'between');
+drawChart('g8', 1300, 600, 600, null, 'left');
+drawChart('g9', 500, 5, 495, 508, 'between');
+drawChart('g10', 100, 15, 130, null, 'right');
 </script>
 </body>
 </html>
