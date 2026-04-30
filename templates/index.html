@@ -36,6 +36,8 @@
     .input{width:100%;background:#fff;border:2px solid #D4B896;color:#1a1a1a;padding:15px 18px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(180,140,90,0.08);font-weight:500;}
     .input:focus{border-color:#A0692A;box-shadow:0 2px 20px rgba(160,105,42,0.18);}
     .input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .input-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+    select.input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A0692A' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;}
 
     .btn{background:#A0692A;color:#fff;border:none;padding:15px 40px;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:50px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 18px rgba(160,105,42,0.35);}
     .btn:hover{background:#7a4f1e;box-shadow:0 6px 24px rgba(160,105,42,0.45);transform:translateY(-2px);}
@@ -47,14 +49,21 @@
     .result-card{background:#fff;padding:28px 20px;text-align:center;border-radius:16px;box-shadow:0 4px 20px rgba(180,140,90,0.15);border:2px solid #D4B896;}
     .result-label{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;margin-bottom:12px;font-weight:700;}
     .result-val{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:#A0692A;}
-    .graph-img{width:100%;border-radius:16px;border:2px solid #D4B896;margin-bottom:24px;box-shadow:0 4px 20px rgba(180,140,90,0.15);}
 
     .divider{height:2px;background:linear-gradient(to right,transparent,#D4B896,transparent);margin:32px 0;}
 
-    .chart-box{background:#fff;border:2px solid #D4B896;border-radius:16px;padding:24px;margin-top:8px;box-shadow:0 4px 20px rgba(180,140,90,0.1);}
-    .chart-title{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;font-weight:700;margin-bottom:16px;text-align:center;}
+    /* NORMAL INTERACTIVO */
+    .normal-chart-box{background:#fff;border:2px solid #D4B896;border-radius:16px;padding:24px;margin-top:24px;box-shadow:0 4px 20px rgba(180,140,90,0.1);}
+    .normal-prob-display{text-align:center;padding:20px;background:#F0EBE3;border-radius:12px;margin-top:16px;border:2px solid #D4B896;}
+    .normal-prob-label{font-size:10px;letter-spacing:3px;color:#8B6340;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+    .normal-prob-val{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#A0692A;}
+    .normal-prob-z{font-size:13px;color:#888;margin-top:6px;}
+    .x-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+    .x-input-row .field-label{margin-bottom:0;white-space:nowrap;}
+    .x-input-small{background:#fff;border:2px solid #D4B896;color:#1a1a1a;padding:12px 16px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;border-radius:12px;width:120px;font-weight:500;}
+    .x-input-small:focus{border-color:#A0692A;}
 
-    .calc-toggle{position:fixed;bottom:30px;right:30px;width:56px;height:56px;background:#A0692A;border:none;color:#fff;font-size:24px;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 4px 20px rgba(160,105,42,0.45);transition:all .2s;}
+    .calc-toggle{position:fixed;bottom:30px;right:30px;width:56px;height:56px;background:#A0692A;border:none;color:#fff;font-size:20px;font-weight:700;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 4px 20px rgba(160,105,42,0.45);transition:all .2s;font-family:'DM Sans',sans-serif;}
     .calc-toggle:hover{background:#7a4f1e;transform:scale(1.07);}
     .calc-panel{position:fixed;bottom:104px;right:30px;width:284px;background:#fff;border:2px solid #D4B896;z-index:100;display:none;padding:20px;border-radius:20px;box-shadow:0 8px 40px rgba(180,140,90,0.25);}
     .calc-panel.show{display:block;}
@@ -121,30 +130,57 @@
         <div class="result-card"><div class="result-label">E(X)</div><div class="result-val" id="val-esperado">&mdash;</div></div>
         <div class="result-card"><div class="result-label">Varianza</div><div class="result-val" id="val-var-esp">&mdash;</div></div>
         <div class="result-card"><div class="result-label">Desv. Est&aacute;ndar</div><div class="result-val" id="val-desv-esp">&mdash;</div></div>
+      </div>
     </div>
   </div>
-  </div>
 
-  <!-- NORMAL -->
+  <!-- NORMAL INTERACTIVO -->
   <div class="section" id="sec-normal">
     <div class="section-label">M&oacute;dulo 03</div>
     <div class="section-title">Distribuci&oacute;n Normal</div>
-    <div class="section-desc">Genera la gr&aacute;fica de la distribuci&oacute;n normal con los par&aacute;metros que definas.</div>
+    <div class="section-desc">Ingresa los par&aacute;metros y el tipo de probabilidad. La gr&aacute;fica se actualiza autom&aacute;ticamente.</div>
+
     <div class="input-row">
-      <div><div class="field-label">Media (&mu;)</div><input class="input" id="media-normal" value="0"></div>
-      <div><div class="field-label">Desviaci&oacute;n est&aacute;ndar (&sigma;)</div><input class="input" id="des-normal" value="1"></div>
+      <div><div class="field-label">Media (&mu;)</div><input class="input" id="n-mu" type="number" value="0" oninput="actualizarNormal()"></div>
+      <div><div class="field-label">Desviaci&oacute;n est&aacute;ndar (&sigma;)</div><input class="input" id="n-sigma" type="number" value="1" min="0.01" step="0.1" oninput="actualizarNormal()"></div>
     </div>
-    <button class="btn" onclick="graficaNormal()">Generar gr&aacute;fica &rarr;</button>
-    <div class="results" id="res-normal">
-      <div class="divider"></div>
-      <img class="graph-img" id="img-normal">
+
+    <div class="field-label">Tipo de probabilidad</div>
+    <select class="input" id="n-tipo" style="max-width:280px" onchange="cambiarTipo()">
+      <option value="left">P(X &lt; a) &mdash; cola izquierda</option>
+      <option value="right">P(X &gt; a) &mdash; cola derecha</option>
+      <option value="between">P(a &lt; X &lt; b) &mdash; intervalo</option>
+    </select>
+
+    <div id="n-single-row" class="x-input-row">
+      <span class="field-label" id="n-label-single">P( X &lt;</span>
+      <input class="x-input-small" id="n-a" type="number" value="0" step="0.1" oninput="actualizarNormal()">
+      <span class="field-label">)</span>
+    </div>
+
+    <div id="n-double-row" style="display:none" class="x-input-row">
+      <span class="field-label">P(</span>
+      <input class="x-input-small" id="n-a2" type="number" value="-1" step="0.1" oninput="actualizarNormal()">
+      <span class="field-label">&lt; X &lt;</span>
+      <input class="x-input-small" id="n-b2" type="number" value="1" step="0.1" oninput="actualizarNormal()">
+      <span class="field-label">)</span>
+    </div>
+
+    <div class="normal-chart-box">
+      <canvas id="chart-normal" height="180"></canvas>
+    </div>
+
+    <div class="normal-prob-display">
+      <div class="normal-prob-label">Probabilidad</div>
+      <div class="normal-prob-val" id="n-prob-val">—</div>
+      <div class="normal-prob-z" id="n-prob-z"></div>
     </div>
   </div>
 
 </div>
 
 <!-- CALCULADORA FLOTANTE -->
-<button class="calc-toggle" onclick="toggleCalc()" title="Calculadora cient&iacute;fica">&#8747;</button>
+<button class="calc-toggle" onclick="toggleCalc()" title="Calculadora cient&iacute;fica">C</button>
 <div class="calc-panel" id="calc-panel">
   <div style="font-size:10px;letter-spacing:3px;color:#8B6340;margin-bottom:14px;text-transform:uppercase;font-weight:700;">Calculadora cient&iacute;fica</div>
   <div class="calc-display" id="calc-display">0</div>
@@ -152,27 +188,27 @@
     <button class="ck red" onclick="calcClear()">C</button>
     <button class="ck op" onclick="calcInput('(')">(</button>
     <button class="ck op" onclick="calcInput(')')">)</button>
-    <button class="ck op" onclick="calcInput('/')">÷</button>
+    <button class="ck op" onclick="calcInput('/')">&#247;</button>
     <button class="ck" onclick="calcInput('7')">7</button>
     <button class="ck" onclick="calcInput('8')">8</button>
     <button class="ck" onclick="calcInput('9')">9</button>
-    <button class="ck op" onclick="calcInput('*')">×</button>
+    <button class="ck op" onclick="calcInput('*')">&#215;</button>
     <button class="ck" onclick="calcInput('4')">4</button>
     <button class="ck" onclick="calcInput('5')">5</button>
     <button class="ck" onclick="calcInput('6')">6</button>
-    <button class="ck op" onclick="calcInput('-')">−</button>
+    <button class="ck op" onclick="calcInput('-')">&#8722;</button>
     <button class="ck" onclick="calcInput('1')">1</button>
     <button class="ck" onclick="calcInput('2')">2</button>
     <button class="ck" onclick="calcInput('3')">3</button>
     <button class="ck op" onclick="calcInput('+')">+</button>
     <button class="ck" onclick="calcInput('0')">0</button>
     <button class="ck" onclick="calcInput('.')">.</button>
-    <button class="ck op" onclick="calcInput('**2')">x²</button>
+    <button class="ck op" onclick="calcInput('**2')">x&#178;</button>
     <button class="ck red" onclick="calcEquals()">=</button>
-    <button class="ck op" onclick="calcInput('Math.sqrt(')">√</button>
+    <button class="ck op" onclick="calcInput('Math.sqrt(')">&#8730;</button>
     <button class="ck op" onclick="calcInput('Math.log(')">ln</button>
-    <button class="ck op" onclick="calcInput('Math.PI')">π</button>
-    <button class="ck op" onclick="calcBack()">⌫</button>
+    <button class="ck op" onclick="calcInput('Math.PI')">&#960;</button>
+    <button class="ck op" onclick="calcBack()">&#9003;</button>
     <button class="ck op" onclick="calcInput('Math.sin(')">sin</button>
     <button class="ck op" onclick="calcInput('Math.cos(')">cos</button>
     <button class="ck op" onclick="calcInput('Math.tan(')">tan</button>
@@ -181,22 +217,21 @@
 </div>
 
 <script>
-  let chartVarianza = null;
-  let chartEsperado = null;
-
+  // ── NAVEGACIÓN ──────────────────────────────────────────
   function mostrar(sec, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('sec-'+sec).classList.add('active');
     if(btn) btn.classList.add('active');
+    if(sec === 'normal') actualizarNormal();
   }
-
   function showResults(id) {
     const el = document.getElementById(id);
     el.classList.add('show');
     el.style.display = 'block';
   }
 
+  // ── VARIANZA ────────────────────────────────────────────
   async function calcularVarianza() {
     const datos = document.getElementById('datos-varianza').value;
     showResults('res-varianza');
@@ -205,70 +240,9 @@
     document.getElementById('val-varianza').textContent = data.varianza;
     document.getElementById('val-media').textContent = data.media;
     document.getElementById('val-desv').textContent = data.desviacion;
-
-    // Gráfica de dispersión
-    const nums = datos.split(',').map(Number);
-    const media = data.media;
-    const desv = data.desviacion;
-
-    if (chartVarianza) chartVarianza.destroy();
-    chartVarianza = new Chart(document.getElementById('chart-varianza'), {
-      type: 'scatter',
-      data: {
-        datasets: [
-          {
-            label: 'Datos',
-            data: nums.map((v, i) => ({ x: i + 1, y: v })),
-            backgroundColor: '#A0692A',
-            pointRadius: 8,
-            pointHoverRadius: 10,
-          },
-          {
-            label: 'Media (\u03bc = ' + media + ')',
-            data: [{ x: 0.5, y: media }, { x: nums.length + 0.5, y: media }],
-            type: 'line',
-            borderColor: '#7a4f1e',
-            borderWidth: 2,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-          },
-          {
-            label: '\u03bc + \u03c3 = ' + (media + desv).toFixed(2),
-            data: [{ x: 0.5, y: media + desv }, { x: nums.length + 0.5, y: media + desv }],
-            type: 'line',
-            borderColor: '#D4B896',
-            borderWidth: 1.5,
-            borderDash: [3, 3],
-            pointRadius: 0,
-            fill: false,
-          },
-          {
-            label: '\u03bc \u2212 \u03c3 = ' + (media - desv).toFixed(2),
-            data: [{ x: 0.5, y: media - desv }, { x: nums.length + 0.5, y: media - desv }],
-            type: 'line',
-            borderColor: '#D4B896',
-            borderWidth: 1.5,
-            borderDash: [3, 3],
-            pointRadius: 0,
-            fill: false,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: '#555', font: { family: 'DM Sans', size: 11 } } },
-          tooltip: { callbacks: { label: ctx => 'Dato ' + ctx.parsed.x + ': ' + ctx.parsed.y } }
-        },
-        scales: {
-          x: { title: { display: true, text: 'Índice del dato', color: '#8B6340', font: { family: 'DM Sans' } }, ticks: { color: '#888' }, grid: { color: '#EDE8E3' } },
-          y: { title: { display: true, text: 'Valor', color: '#8B6340', font: { family: 'DM Sans' } }, ticks: { color: '#888' }, grid: { color: '#EDE8E3' } }
-        }
-      }
-    });
   }
 
+  // ── VALOR ESPERADO ──────────────────────────────────────
   async function calcularEsperado() {
     const valores = document.getElementById('valores-esp').value;
     const probabilidades = document.getElementById('probs-esp').value;
@@ -278,52 +252,99 @@
     document.getElementById('val-esperado').textContent = data.esperado;
     document.getElementById('val-var-esp').textContent = data.varianza;
     document.getElementById('val-desv-esp').textContent = data.desviacion;
+  }
 
-    // Gráfica de barras P(X)
-    const vals = valores.split(',').map(v => v.trim());
-    const probs = probabilidades.split(',').map(Number);
-    const esperado = data.esperado;
+  // ── DISTRIBUCIÓN NORMAL INTERACTIVA ─────────────────────
+  function erf(x) {
+    const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+    const sign = x < 0 ? -1 : 1; x = Math.abs(x);
+    const t = 1/(1+p*x);
+    const y = 1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+    return sign*y;
+  }
+  function normCDF(x) { return 0.5*(1+erf(x/Math.sqrt(2))); }
+  function normalPDF(x, mu, sigma) { return Math.exp(-0.5*((x-mu)/sigma)**2)/(sigma*Math.sqrt(2*Math.PI)); }
 
-    const colores = vals.map(v => Math.abs(parseFloat(v) - esperado) < 0.001 ? '#7a4f1e' : '#A0692A');
+  let chartNormal = null;
 
-    if (chartEsperado) chartEsperado.destroy();
-    chartEsperado = new Chart(document.getElementById('chart-esperado'), {
-      type: 'bar',
+  function cambiarTipo() {
+    const tipo = document.getElementById('n-tipo').value;
+    const single = document.getElementById('n-single-row');
+    const dbl = document.getElementById('n-double-row');
+    const lbl = document.getElementById('n-label-single');
+    if (tipo === 'between') { single.style.display='none'; dbl.style.display='flex'; }
+    else { single.style.display='flex'; dbl.style.display='none'; lbl.textContent = tipo==='left' ? 'P( X <' : 'P( X >'; }
+    actualizarNormal();
+  }
+
+  function actualizarNormal() {
+    const mu = parseFloat(document.getElementById('n-mu').value) || 0;
+    const sigma = parseFloat(document.getElementById('n-sigma').value) || 1;
+    const tipo = document.getElementById('n-tipo').value;
+    const a = parseFloat(document.getElementById('n-a').value) || 0;
+    const a2 = parseFloat(document.getElementById('n-a2').value) || -1;
+    const b2 = parseFloat(document.getElementById('n-b2').value) || 1;
+
+    const min = mu - 4*sigma, max = mu + 4*sigma, steps = 150;
+    const labels = [], base = [], shade = [];
+
+    for (let i = 0; i <= steps; i++) {
+      const x = min + (max-min)*i/steps;
+      const y = normalPDF(x, mu, sigma);
+      labels.push(x.toFixed(3));
+      base.push(y);
+      let s = 0;
+      if (tipo==='left' && x <= a) s = y;
+      if (tipo==='right' && x >= a) s = y;
+      if (tipo==='between' && x >= a2 && x <= b2) s = y;
+      shade.push(s);
+    }
+
+    // Calcular probabilidad
+    let prob, zText;
+    if (tipo === 'left') {
+      const z = (a-mu)/sigma;
+      prob = normCDF(z);
+      zText = 'z = (' + a + ' − ' + mu + ') / ' + sigma + ' = ' + z.toFixed(4) + ' → P = ' + prob.toFixed(4);
+    } else if (tipo === 'right') {
+      const z = (a-mu)/sigma;
+      prob = 1 - normCDF(z);
+      zText = 'z = (' + a + ' − ' + mu + ') / ' + sigma + ' = ' + z.toFixed(4) + ' → P = ' + prob.toFixed(4);
+    } else {
+      const z1 = (a2-mu)/sigma, z2 = (b2-mu)/sigma;
+      prob = normCDF(z2) - normCDF(z1);
+      zText = 'z₁ = ' + z1.toFixed(4) + '  ·  z₂ = ' + z2.toFixed(4) + ' → P = ' + prob.toFixed(4);
+    }
+
+    document.getElementById('n-prob-val').textContent = (prob*100).toFixed(4) + '%';
+    document.getElementById('n-prob-z').textContent = zText;
+
+    if (chartNormal) chartNormal.destroy();
+    chartNormal = new Chart(document.getElementById('chart-normal'), {
+      type: 'line',
       data: {
-        labels: vals.map(v => 'X = ' + v),
-        datasets: [{
-          label: 'P(X)',
-          data: probs,
-          backgroundColor: colores,
-          borderColor: '#D4B896',
-          borderWidth: 2,
-          borderRadius: 8,
-        }]
+        labels,
+        datasets: [
+          { data: shade, fill: true, backgroundColor: 'rgba(160,105,42,0.35)', borderColor: 'transparent', pointRadius: 0, tension: 0.4 },
+          { data: base, fill: false, borderColor: '#A0692A', borderWidth: 2.5, pointRadius: 0, tension: 0.4 }
+        ]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => 'P(X) = ' + ctx.parsed.y } },
-          annotation: {}
-        },
+        animation: { duration: 200 },
+        plugins: { legend: { display: false } },
         scales: {
-          x: { title: { display: true, text: 'Valores de X', color: '#8B6340', font: { family: 'DM Sans' } }, ticks: { color: '#555' }, grid: { color: '#EDE8E3' } },
-          y: { title: { display: true, text: 'Probabilidad P(X)', color: '#8B6340', font: { family: 'DM Sans' } }, ticks: { color: '#555' }, grid: { color: '#EDE8E3' }, min: 0, max: 1 }
+          x: { display: false },
+          y: { display: false }
         }
       }
     });
   }
 
-  async function graficaNormal() {
-    const media = document.getElementById('media-normal').value;
-    const desviacion = document.getElementById('des-normal').value;
-    showResults('res-normal');
-    const res = await fetch('/normal', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({media, desviacion})});
-    const data = await res.json();
-    document.getElementById('img-normal').src = 'data:image/png;base64,' + data.imagen;
-  }
+  // Inicializar gráfica al cargar
+  window.addEventListener('load', () => actualizarNormal());
 
+  // ── CALCULADORA ─────────────────────────────────────────
   let calcExpr = '';
   function toggleCalc() { document.getElementById('calc-panel').classList.toggle('show'); }
   function calcInput(v) {
