@@ -8,8 +8,6 @@ import base64
 import io
 
 app = Flask(__name__)
-from pruebas import pruebas
-app.register_blueprint(pruebas)
 
 def figura_a_base64(fig):
     buf = io.BytesIO()
@@ -83,10 +81,6 @@ def grafica_normal():
 @app.route('/problemas')
 def problemas():
     return render_template('problemas.html')
-
-@app.route('/inferencia')
-def inferencia():
-    return render_template('inferencia.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

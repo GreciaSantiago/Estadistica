@@ -355,7 +355,7 @@
       <div class="tool-result-desc" id="desc-z"></div>
     </div>
     <div class="ztable-wrap">
-      <div class="field-label" style="margin-top:20px;margin-bottom:8px;">Tabla Z &mdash; valores de -3.4 a 3.4</div>
+      <div class="field-label" style="margin-top:20px;margin-bottom:8px;">Tabla Z &mdash; valores de 0.0 a 3.4</div>
       <table id="ztable"></table>
     </div>
   </div>

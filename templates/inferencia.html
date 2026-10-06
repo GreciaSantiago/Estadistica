@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inferencia · Probabilidad y Estadística</title>
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F0EBE3;color:#1a1a1a;font-family:'DM Sans',sans-serif;min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:#fff;border-bottom:2px solid #D4B896}
+.logo{font-size:12px;letter-spacing:4px;color:#8B6340;text-transform:uppercase;font-weight:700}
+.header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900}
+.header h1 span{color:#A0692A}
+.back{display:inline-block;margin:28px 48px 0;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#A0692A;text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:24px 48px 60px}
+h2{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;margin-bottom:6px}
+.sub{font-size:14px;color:#666;margin-bottom:28px}
+.card{background:#fff;border:2px solid #D4B896;border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:0 4px 20px rgba(180,140,90,.1)}
+.lbl{font-size:11px;letter-spacing:3px;color:#7a5c3a;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.in{width:100%;background:#F0EBE3;border:2px solid #D4B896;padding:12px 14px;font-size:14px;font-family:inherit;border-radius:10px;outline:none;margin-bottom:16px;font-weight:500}
+.in:focus{border-color:#A0692A}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.btn{background:#A0692A;color:#fff;border:none;padding:13px 32px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-radius:50px;font-family:inherit}
+.btn:hover{background:#7a4f1e}
+.btn.sec{background:#fff;color:#A0692A;border:2px solid #A0692A;margin-top:8px}
+.msg{font-size:13px;color:#7a4f1e;margin-top:12px;line-height:1.6}
+#out{display:none}
+.paso{font-size:14px;line-height:1.9;border-bottom:1px solid #EDE8E3;padding:4px 0;white-space:pre-wrap}
+.badge{display:inline-block;margin-top:18px;padding:14px 22px;border-radius:12px;color:#fff;font-weight:700;font-size:16px}
+.rej{background:#A0692A}.nrej{background:#666}
+.concl{margin-top:12px;font-size:14px;color:#333;line-height:1.7}
+#graf{width:100%;margin-top:18px;border-radius:12px;border:1px solid #D4B896}
+table{border-collapse:collapse;font-size:12px;margin-top:16px}
+th,td{padding:5px 12px;border:1px solid #EDE8E3;text-align:center}
+th{background:#A0692A;color:#fff}
+.err{color:#b03a2e;font-weight:600}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.wrap,.header{padding-left:20px;padding-right:20px}.back{margin-left:20px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Prob &middot; Est</div>
+  <h1>Probabilidad <span>&amp;</span> Estad&iacute;stica</h1>
+  <div style="width:60px"></div>
+</div>
+<a class="back" href="/">&#8592; Volver</a>
+
+<div class="wrap">
+  <h2>Inferencia</h2>
+  <div class="sub">Intervalos, pruebas de hip&oacute;tesis y no param&eacute;tricas, con pasos y gr&aacute;fica.</div>
+
+  <div class="card">
+    <div class="lbl">&iquest;Qu&eacute; cola es? Pega el enunciado</div>
+    <textarea class="in" id="txt" rows="3" placeholder="Ej: &iquest;Tardan menos de 35 minutos en contestar la prueba?"></textarea>
+    <button class="btn sec" onclick="detectar()">Detectar cola</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="card">
+    <div class="lbl">Herramienta</div>
+    <select class="in" id="sel" onchange="armar()" style="max-width:380px">
+      <option value="intervalo">2.1 &middot; Intervalo de confianza</option>
+      <option value="media">2.2 / 2.3 &middot; Prueba de una media (Z o t)</option>
+      <option value="dos">2.4 &middot; Diferencia de dos medias</option>
+      <option value="wil">2.5 &middot; Wilcoxon</option>
+      <option value="mw">2.6 &middot; Mann-Whitney</option>
+    </select>
+    <div class="grid" id="campos"></div>
+    <button class="btn" onclick="calcular()">Calcular &rarr;</button>
+  </div>
+
+  <div class="card" id="out">
+    <div id="pasos"></div>
+    <div id="dec"></div>
+    <div class="concl" id="concl"></div>
+    <div id="tabla"></div>
+    <img id="graf" alt="Gr&aacute;fica">
+  </div>
+</div>
+
+<script>
+const N = (id, l) => [id, l];
+const T = {
+  intervalo: {u:'/intervalo', cola:false, c:[N('n','n'),N('xbar','x̄'),N('sigma','σ (vacío si no la conoces)'),N('s','s (vacío si conoces σ)'),N('nivel','Nivel de confianza %')]},
+  media:     {u:'/prueba_media', cola:true, c:[N('n','n'),N('xbar','x̄'),N('mu0','μ₀'),N('sigma','σ (vacío si usas s)'),N('s','s (vacío si usas σ)'),N('alpha','α')]},
+  dos:       {u:'/dos_medias', cola:true, c:[N('xbar1','x̄₁'),N('xbar2','x̄₂'),N('s1','s₁'),N('s2','s₂'),N('n1','n₁'),N('n2','n₂'),N('D0','D₀ (normalmente 0)'),N('alpha','α')]},
+  wil:       {u:'/wilcoxon', cola:true, div:true, c:[N('datos1','Datos 1 (separados por comas)'),N('datos2','Datos 2 (mismo orden)'),N('alpha','α')]},
+  mw:        {u:'/mann_whitney', cola:true, c:[N('datos1','Grupo 1 (comas)'),N('datos2','Grupo 2 (comas)'),N('alpha','α')]}
+};
+let colaSug = null;
+const $ = id => document.getElementById(id);
+
+function armar() {
+  const t = T[$('sel').value];
+  let h = t.c.map(([id, l]) => `<div><div class="lbl">${l}</div><input class="in" id="f-${id}"></div>`).join('');
+  if (t.cola) h += `<div><div class="lbl">Cola</div><select class="in" id="f-cola">
+    <option value="izquierda">Izquierda (Ha: &lt;)</option>
+    <option value="derecha">Derecha (Ha: &gt;)</option>
+    <option value="bilateral">Bilateral (Ha: ≠)</option></select></div>`;
+  if (t.div) h += `<div><div class="lbl">Divisor de σT</div><select class="in" id="f-divisor">
+    <option value="24">24 (fórmula estándar)</option><option value="6">6 (la de tus apuntes)</option></select></div>`;
+  $('campos').innerHTML = h;
+  if (colaSug && $('f-cola')) $('f-cola').value = colaSug;
+  $('out').style.display = 'none';
+}
+
+async function detectar() {
+  const r = await fetch('/detectar_cola', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({texto: $('txt').value})});
+  const j = await r.json();
+  if (j.cola) {
+    colaSug = j.cola;
+    if ($('f-cola')) $('f-cola').value = j.cola;
+    $('msg').textContent = `Sugerencia: cola ${j.cola} (pistas: ${j.pistas.join(', ')}). Confírmalo con la desigualdad de Ha: < izquierda, > derecha, ≠ bilateral.`;
+  } else {
+    $('msg').textContent = 'No pude decidirlo solo. Mira qué desigualdad tiene Ha: < izquierda, > derecha, ≠ bilateral.';
+  }
+}
+
+async function calcular() {
+  const t = T[$('sel').value], d = {};
+  document.querySelectorAll('#campos [id^=f-]').forEach(e => d[e.id.slice(2)] = e.value.trim());
+  $('out').style.display = 'block';
+  const r = await fetch(t.u, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(d)});
+  if (!r.ok) {
+    $('pasos').innerHTML = '<p class="err">Revisa los datos: falta algún campo o tiene formato inválido.</p>';
+    ['dec','concl','tabla'].forEach(i => $(i).innerHTML = ''); $('graf').style.display = 'none';
+    return;
+  }
+  const j = await r.json();
+  $('pasos').innerHTML = j.pasos.map(p => `<div class="paso">${p}</div>`).join('');
+  $('dec').innerHTML = j.decision ? `<div class="badge ${j.decision.startsWith('Se') ? 'rej' : 'nrej'}">${j.decision}</div>` : '';
+  $('concl').textContent = j.conclusion || '';
+  if (j.tabla) {
+    const ks = Object.keys(j.tabla[0]);
+    $('tabla').innerHTML = '<table><tr>' + ks.map(k => `<th>${k}</th>`).join('') + '</tr>' +
+      j.tabla.map(f => '<tr>' + ks.map(k => `<td>${f[k]}</td>`).join('') + '</tr>').join('') + '</table>';
+  } else $('tabla').innerHTML = '';
+  $('graf').style.display = 'block';
+  $('graf').src = 'data:image/png;base64,' + j.grafica;
+}
+armar();
+</script>
+</body>
+</html>
