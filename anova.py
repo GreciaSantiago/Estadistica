@@ -3,6 +3,7 @@ Blueprint para Flask. Rutas:  GET /anova   y   POST /anova_calcular
 """
 import io
 import re
+import json
 import base64
 from itertools import combinations
 
@@ -11,7 +12,7 @@ from scipy import stats
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, Response
 
 anova = Blueprint('anova', __name__)
 
@@ -232,6 +233,9 @@ def anova_calcular():
             alpha = float(str(d.get('alpha', '0.05')).replace(',', '.'))
         except ValueError:
             raise DatosInvalidos('α no es un número válido.')
-        return jsonify(resolver(nombres, grupos, alpha))
+        # json.dumps (sin ordenar claves) para que las columnas de las tablas
+        # lleguen en el orden correcto; jsonify de Flask las ordena alfabéticamente.
+        cuerpo = json.dumps(resolver(nombres, grupos, alpha), ensure_ascii=False)
+        return Response(cuerpo, mimetype='application/json')
     except DatosInvalidos as e:
         return jsonify({'error': str(e)}), 400
