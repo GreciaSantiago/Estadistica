@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANOVA y LSD · Probabilidad y Estadística</title>
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F0EBE3;color:#1a1a1a;font-family:'DM Sans',sans-serif;min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:#fff;border-bottom:2px solid #D4B896}
+.logo{font-size:12px;letter-spacing:4px;color:#8B6340;text-transform:uppercase;font-weight:700}
+.header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900}
+.header h1 span{color:#A0692A}
+.back{display:inline-block;margin:28px 48px 0;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#A0692A;text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:24px 48px 60px}
+h2{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;margin-bottom:6px}
+h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin:26px 0 10px;color:#7a4f1e}
+.sub{font-size:14px;color:#666;margin-bottom:28px}
+.card{background:#fff;border:2px solid #D4B896;border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:0 4px 20px rgba(180,140,90,.1)}
+.lbl{font-size:11px;letter-spacing:3px;color:#7a5c3a;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.in{width:100%;background:#F0EBE3;border:2px solid #D4B896;padding:12px 14px;font-size:14px;font-family:inherit;border-radius:10px;outline:none;margin-bottom:16px;font-weight:500}
+.in:focus{border-color:#A0692A}
+textarea.in{resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.gr{display:grid;grid-template-columns:200px 1fr;gap:0 14px;align-items:start}
+.btn{background:#A0692A;color:#fff;border:none;padding:13px 32px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-radius:50px;font-family:inherit}
+.btn:hover{background:#7a4f1e}
+.hint{font-size:12px;color:#7a5c3a;line-height:1.6;margin-bottom:14px}
+#out{display:none}
+.paso{font-size:14px;line-height:1.9;border-bottom:1px solid #EDE8E3;padding:6px 0;white-space:pre-wrap}
+.badge{display:inline-block;margin-top:18px;padding:14px 22px;border-radius:12px;color:#fff;font-weight:700;font-size:16px}
+.rej{background:#A0692A}.nrej{background:#666}
+.concl{margin-top:12px;font-size:14px;color:#333;line-height:1.7}
+#graf{width:100%;margin-top:18px;border-radius:12px;border:1px solid #D4B896}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;font-size:13px;margin-top:12px;min-width:100%}
+th,td{padding:7px 12px;border:1px solid #EDE8E3;text-align:center}
+th{background:#A0692A;color:#fff}
+.err{color:#b03a2e;font-weight:600}
+@media(max-width:640px){.grid,.gr{grid-template-columns:1fr}.wrap,.header{padding-left:20px;padding-right:20px}.back{margin-left:20px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Prob &middot; Est</div>
+  <h1>Probabilidad <span>&amp;</span> Estad&iacute;stica</h1>
+  <div style="width:60px"></div>
+</div>
+<a class="back" href="/">&#8592; Volver</a>
+
+<div class="wrap">
+  <h2>ANOVA y LSD de Fisher</h2>
+  <div class="sub">An&aacute;lisis de varianza de un factor (dise&ntilde;o completamente aleatorizado), con tabla ANOVA, valor-p, valor cr&iacute;tico y comparaci&oacute;n de parejas con LSD.</div>
+
+  <div class="card">
+    <div class="grid">
+      <div>
+        <div class="lbl">Cargar ejemplo</div>
+        <select class="in" id="ej" onchange="cargarEjemplo()">
+          <option value="">— Datos propios —</option>
+          <option value="a31i">Act. 3.1 · I · Tabletas (α = 0.05)</option>
+          <option value="a31ii">Act. 3.1 · II · Concreto (α = 0.04)</option>
+          <option value="a32_13">Act. 3.2 · #13 · Tratamientos (α = 0.05)</option>
+          <option value="a32_18">Act. 3.2 · #18 · Máquinas (α = 0.05)</option>
+        </select>
+      </div>
+      <div>
+        <div class="lbl">N&uacute;mero de grupos (k)</div>
+        <input class="in" id="k" type="number" min="2" max="10" value="3" onchange="armar()">
+      </div>
+    </div>
+
+    <div id="grupos"></div>
+
+    <div class="grid">
+      <div>
+        <div class="lbl">Nivel de significancia &alpha;</div>
+        <input class="in" id="alpha" value="0.05">
+      </div>
+      <div></div>
+    </div>
+    <div class="hint">Separa los datos con comas, espacios o saltos de l&iacute;nea. Usa <b>punto</b> como decimal (5.2). Los grupos pueden tener distinta cantidad de datos.</div>
+    <button class="btn" onclick="calcular()">Calcular &rarr;</button>
+  </div>
+
+  <div class="card" id="out">
+    <h3 style="margin-top:0">ANOVA</h3>
+    <div id="pasos"></div>
+    <div class="scroll" id="tabla"></div>
+    <div id="dec"></div>
+    <div class="concl" id="concl"></div>
+
+    <div id="lsdbox">
+      <h3>Prueba LSD de Fisher</h3>
+      <div id="lsdpasos"></div>
+      <div class="scroll" id="lsdtabla"></div>
+      <div class="concl" id="lsdconcl" style="font-weight:600"></div>
+    </div>
+
+    <img id="graf" alt="Gr&aacute;fica">
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const EJ = {
+  a31i: {alpha:'0.05', g:[
+    ['Tableta A','5.2, 4.7, 8.1, 6.2, 3.0'],
+    ['Tableta B','9.1, 7.1, 8.2, 6.0, 9.1'],
+    ['Tableta C','3.2, 5.8, 2.2, 3.1, 7.2']]},
+  a31ii: {alpha:'0.04', g:[
+    ['Agregado 1','551, 457, 450, 731, 499, 632'],
+    ['Agregado 2','595, 580, 508, 583, 633, 517'],
+    ['Agregado 3','639, 615, 511, 573, 648, 677'],
+    ['Agregado 4','417, 449, 517, 438, 415, 555'],
+    ['Agregado 5','563, 631, 522, 613, 656, 679']]},
+  a32_13: {alpha:'0.05', g:[
+    ['A','32, 30, 30, 26, 32'],
+    ['B','44, 43, 44, 46, 48'],
+    ['C','33, 36, 35, 36, 40']]},
+  a32_18: {alpha:'0.05', g:[
+    ['Máquina 1','6.4, 7.8, 5.3, 7.4, 8.4, 7.3'],
+    ['Máquina 2','8.7, 7.4, 9.4, 10.1, 9.2, 9.8'],
+    ['Máquina 3','11.1, 10.3, 9.7, 10.3, 9.2, 8.8'],
+    ['Máquina 4','9.9, 12.8, 12.1, 10.8, 11.3, 11.5']]}
+};
+
+function leerGrupos() {
+  const n = document.querySelectorAll('[id^=gn-]').length, r = [];
+  for (let i = 0; i < n; i++) r.push([$('gn-' + i).value, $('gd-' + i).value]);
+  return r;
+}
+
+function armar(datos) {
+  const k = Math.max(2, Math.min(10, parseInt($('k').value) || 2));
+  $('k').value = k;
+  const prev = datos || leerGrupos();
+  let h = '';
+  for (let i = 0; i < k; i++) {
+    const [nom, dat] = prev[i] || ['', ''];
+    h += `<div class="gr">
+      <div><div class="lbl">Nombre ${i + 1}</div><input class="in" id="gn-${i}" placeholder="Grupo ${i + 1}" value="${esc(nom)}"></div>
+      <div><div class="lbl">Datos del grupo ${i + 1}</div><textarea class="in" id="gd-${i}" rows="2" placeholder="Ej: 5.2, 4.7, 8.1">${esc(dat)}</textarea></div>
+    </div>`;
+  }
+  $('grupos').innerHTML = h;
+  $('out').style.display = 'none';
+}
+
+function cargarEjemplo() {
+  const e = EJ[$('ej').value];
+  if (!e) return;
+  $('k').value = e.g.length;
+  $('alpha').value = e.alpha;
+  armar(e.g);
+}
+
+async function calcular() {
+  const grupos = leerGrupos().map(([nombre, datos]) => ({nombre, datos}));
+  $('out').style.display = 'block';
+  let r, j;
+  try {
+    r = await fetch('/anova_calcular', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({grupos, alpha: $('alpha').value})});
+    j = await r.json();
+  } catch (e) {
+    j = {error: 'No se pudo conectar con el servidor. Intenta de nuevo.'};
+    r = {ok: false};
+  }
+  if (!r.ok) {
+    $('pasos').innerHTML = `<p class="err">${esc(j.error || 'Revisa los datos.')}</p>`;
+    ['tabla','dec','concl','lsdpasos','lsdtabla','lsdconcl'].forEach(i => $(i).innerHTML = '');
+    $('lsdbox').style.display = 'none';
+    $('graf').style.display = 'none';
+    return;
+  }
+  $('lsdbox').style.display = 'block';
+  const paso = p => `<div class="paso">${esc(p)}</div>`;
+  const tab = t => {
+    const ks = Object.keys(t[0]);
+    return '<table><tr>' + ks.map(k => `<th>${esc(k)}</th>`).join('') + '</tr>' +
+      t.map(f => '<tr>' + ks.map(k => `<td>${esc(f[k])}</td>`).join('') + '</tr>').join('') + '</table>';
+  };
+  $('pasos').innerHTML = j.pasos.map(paso).join('');
+  $('tabla').innerHTML = '<div class="lbl" style="margin-top:18px">Tabla ANOVA</div>' + tab(j.tabla);
+  $('dec').innerHTML = `<div class="badge ${j.decision.startsWith('No') ? 'nrej' : 'rej'}">${esc(j.decision)}</div>`;
+  $('concl').textContent = j.conclusion;
+  $('lsdpasos').innerHTML = j.lsd_pasos.map(paso).join('');
+  $('lsdtabla').innerHTML = tab(j.lsd_tabla);
+  $('lsdconcl').textContent = j.lsd_conclusion;
+  $('graf').style.display = 'block';
+  $('graf').src = 'data:image/png;base64,' + j.grafica;
+}
+armar([['',''],['',''],['','']]);
+</script>
+</body>
+</html>

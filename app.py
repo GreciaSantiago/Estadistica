@@ -10,6 +10,12 @@ import io
 app = Flask(__name__)
 from pruebas import pruebas
 app.register_blueprint(pruebas)
+from anova import anova
+app.register_blueprint(anova)
+
+@app.route('/inferencia')
+def inferencia():
+    return render_template('inferencia.html')
 
 def figura_a_base64(fig):
     buf = io.BytesIO()
@@ -83,10 +89,6 @@ def grafica_normal():
 @app.route('/problemas')
 def problemas():
     return render_template('problemas.html')
-
-@app.route('/inferencia')
-def inferencia():
-    return render_template('inferencia.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
